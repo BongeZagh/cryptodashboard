@@ -66,15 +66,20 @@ def collect_data(timeframe='4h', limit=500):
 
         df['squeeze_on'] = df.apply(in_squeeze, axis=1)
 
-        df['squeeze_on_shift_2'] = df['squeeze_on'].shift(2)
-
+        df['sqz_sft_1'] = df['squeeze_on'].shift(1)
+        df['sqz_sft_2'] = df['squeeze_on'].shift(2)
+        df['sqz_sft_3'] = df['squeeze_on'].shift(3)
+        df['sqz_sft_4'] = df['squeeze_on'].shift(4)
+        df['sqz_sft_5'] = df['squeeze_on'].shift(5)
+        df['sqz_sft_6'] = df['squeeze_on'].shift(6)
+        
         def out_squeeze(df):
-            return df['squeeze_on_shift_2'] and not df['squeeze_on']
+            return df['sqz_sft_1'] and df['sqz_sft_2'] and df['sqz_sft_3'] and df['sqz_sft_4'] and df['sqz_sft_5'] and df['sqz_sft_6'] and not df['squeeze_on']
 
         df['squeeze_out'] = df.apply(out_squeeze, axis=1)
 
-        if df.iloc[-2]['squeeze_on'] and not df.iloc[-1]['squeeze_on']:
-            print("{} is coming out the squeeze".format(symbol))
+        #if df.iloc[-2]['squeeze_on'] and not df.iloc[-1]['squeeze_on']:
+            #print("{} is coming out the squeeze".format(symbol))
 
         all_candles_f.append(df)
 
