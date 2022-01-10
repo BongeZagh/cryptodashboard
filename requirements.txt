@@ -1,0 +1,10 @@
+streamlit
+pandas
+plotly
+psycopg2=2.8.0
+requests
+tweepy
+numpy
+ccxt
+scipy
+matplotlib
