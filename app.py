@@ -13,7 +13,6 @@ import dateutil
 from datetime import datetime, timedelta
 from functools import reduce
 from scipy.signal import argrelextrema
-import psycopg2, psycopg2.extras
 import plotly.graph_objects as go
 
 data_1h = collect_data(timeframe = '1h', limit = 1000)
