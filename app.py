@@ -220,6 +220,7 @@ left_column, right_column = st.columns(2)
 left_column.plotly_chart(fig_price_ch_1_up, use_container_width=True)
 right_column.plotly_chart(fig_price_ch_1_down, use_container_width=True)
 
+st.dadaframe(data_1h)
 
 symbol = st.sidebar.text_input("Symbol", value='BTC', max_chars=5)
 
