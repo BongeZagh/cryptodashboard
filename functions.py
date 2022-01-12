@@ -10,6 +10,7 @@ def collect_data(timeframe='4h', limit=500):
     from datetime import datetime
     from functools import reduce
     from scipy.signal import argrelextrema
+    import talib as ta
 
     # define the market
     exchange_f = ccxt.binance({
