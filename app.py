@@ -237,12 +237,12 @@ right_column.plotly_chart(fig_price_ch_1_down, use_container_width=True)
 
 symbol = st.sidebar.text_input("Symbol", value='BTC', max_chars=5)
 
-r = requests.get(f"https://api.stocktwits.com/api/2/streams/symbol/{symbol}.json")
+# r = requests.get(f"https://api.stocktwits.com/api/2/streams/symbol/{symbol}.json")
 
-data = r.json()
+# data = r.json()
 
-for message in data['messages']:
-    st.image(message['user']['avatar_url'])
-    st.write(message['user']['username'])
-    st.write(message['created_at'])
-    st.write(message['body'])
+# for message in data['messages']:
+#     st.image(message['user']['avatar_url'])
+#     st.write(message['user']['username'])
+#     st.write(message['created_at'])
+#     st.write(message['body'])
