@@ -47,6 +47,14 @@ def collect_data(timeframe='4h', limit=500):
         df['price_ch_24'] = df["Close"].pct_change(24)
         df['vol_ch_24'] = df["Vol"].pct_change(24)
 
+        df['ma_5'] = df['Close'].rolling(window=5).mean()
+        df['ma_10'] = df['Close'].rolling(window=10).mean()
+        df['ma_20'] = df['Close'].rolling(window=20).mean()
+
+        df['Bull'] = False
+
+        df.loc[(df.ma_5 > df.ma_10) & (df.ma_5 > df.ma_20) & (df.Close >= df.ma_5) & (df.Low <= df.ma_20), 'Bull'] = True
+
         pd.options.mode.chained_assignment = None  # default='warn'
 
         df['20sma'] = df['Close'].rolling(window=20).mean()
@@ -72,14 +80,15 @@ def collect_data(timeframe='4h', limit=500):
         df['sqz_sft_4'] = df['squeeze_on'].shift(4)
         df['sqz_sft_5'] = df['squeeze_on'].shift(5)
         df['sqz_sft_6'] = df['squeeze_on'].shift(6)
-        
+
         def out_squeeze(df):
-            return df['sqz_sft_1'] and df['sqz_sft_2'] and df['sqz_sft_3'] and df['sqz_sft_4'] and df['sqz_sft_5'] and df['sqz_sft_6'] and not df['squeeze_on']
+            return df['sqz_sft_1'] and df['sqz_sft_2'] and df['sqz_sft_3'] and df['sqz_sft_4'] and df['sqz_sft_5'] and \
+                   df['sqz_sft_6'] and not df['squeeze_on']
 
         df['squeeze_out'] = df.apply(out_squeeze, axis=1)
 
-        #if df.iloc[-2]['squeeze_on'] and not df.iloc[-1]['squeeze_on']:
-            #print("{} is coming out the squeeze".format(symbol))
+        # if df.iloc[-2]['squeeze_on'] and not df.iloc[-1]['squeeze_on']:
+        # print("{} is coming out the squeeze".format(symbol))
 
         all_candles_f.append(df)
 
@@ -102,6 +111,11 @@ def listToString(s):
 
 
 def plot_pat(data, symbol):
+    import numpy as np
+    import pandas as pd
+    from scipy.signal import argrelextrema
+    import plotly.graph_objects as go
+
     data = data[data['Symbol'] == symbol]
 
     dt = data.Datetime
@@ -574,3 +588,17 @@ def brk_out(data):
 
     break_out_info = "盘整突破："+', '.join(list(break_outs))
     return break_out_info
+
+def pierce_3ave(data):
+    pierce_3aves = []
+    for i in data['Symbol'].unique().tolist():
+        df = data[data['Symbol'] == i]
+        if df['Bull'].iloc[-1]:
+            pierce_coin = i
+            pierce_coin = listToString(pierce_coin)
+            pierce_3aves.append(pierce_coin)
+
+    pierce_3aves = [s.replace("/USDT", "") for s in pierce_3aves]
+
+    pierce_3ave_info = "一阳穿三均："+', '.join(list(pierce_3aves))
+    return pierce_3ave_info

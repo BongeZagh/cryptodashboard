@@ -15,7 +15,7 @@ from functools import reduce
 from scipy.signal import argrelextrema
 import plotly.graph_objects as go
 
-data_1h = collect_data(timeframe = '1h', limit = 1000)
+data_1h = collect_data(timeframe = '1h', limit = 50)
 data_4h = collect_data(timeframe = '4h', limit = 1000)
 data_8h = collect_data(timeframe = '8h', limit = 1000)
 data_24h = collect_data(timeframe = '1d', limit = 1000)
@@ -30,6 +30,11 @@ brk_out_1h=brk_out(data_1h)
 brk_out_4h=brk_out(data_4h)
 brk_out_8h=brk_out(data_8h)
 brk_out_24h=brk_out(data_24h)
+
+pierce_3ave_1h= pierce_3ave(data_1h)
+pierce_3ave_4h= pierce_3ave(data_4h)
+pierce_3ave_8h= pierce_3ave(data_8h)
+pierce_3ave_24h= pierce_3ave(data_24h)
 
 harmonic_1h = detect_harmonic(data_1h, coins,  order = 20)
 harmonic_4h = detect_harmonic(data_4h, coins, order = 20)
@@ -172,21 +177,30 @@ mn_time = pd.to_datetime(current_time)-timedelta(hours = 6)
 # exec(open("harmonic_detector.py").read())
 
 
+# for coin in coins:
+#     candlestick = plot_pat(data_1h, coin)
+#     st.pyplot(candlestick)
 st.write(mn_time)
+
 st.header('''TTM 挤压扫描器''')
 
 left_column, right_column = st.columns(2)
-left_column.write('1小时TTM：')
+left_column.subheader('1小时：')
 left_column.write(brk_out_1h)
-right_column.write('4小时TTM：')
+left_column.write(pierce_3ave_1h)
+
+right_column.subheader('4小时：')
 right_column.write(brk_out_4h)
+right_column.write(pierce_3ave_4h)
 
 left_column, right_column = st.columns(2)
-left_column.write('8小时TTM：')
-
+left_column.subheader('8小时：')
 left_column.write(brk_out_8h)
-right_column.write('24小时TTM：')
+left_column.write(pierce_3ave_8h)
+
+right_column.subheader('24小时：')
 right_column.write(brk_out_24h)
+right_column.write(pierce_3ave_24h)
 
 st.header('谐波形态扫描器')
 
@@ -220,7 +234,6 @@ left_column, right_column = st.columns(2)
 left_column.plotly_chart(fig_price_ch_1_up, use_container_width=True)
 right_column.plotly_chart(fig_price_ch_1_down, use_container_width=True)
 
-st.dataframe(data_1h)
 
 symbol = st.sidebar.text_input("Symbol", value='BTC', max_chars=5)
 
