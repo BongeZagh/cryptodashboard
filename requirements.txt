@@ -7,3 +7,4 @@ numpy
 ccxt
 scipy
 matplotlib
+TA-Lib
