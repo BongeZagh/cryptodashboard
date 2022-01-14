@@ -36,10 +36,10 @@ pierce_3ave_4h= pierce_3ave(data_4h)
 pierce_3ave_8h= pierce_3ave(data_8h)
 pierce_3ave_24h= pierce_3ave(data_24h)
 
-harmonic_1h = detect_harmonic(data_1h, coins,  order = 10)
-harmonic_4h = detect_harmonic(data_4h, coins, order = 10)
-harmonic_8h = detect_harmonic(data_8h, coins, order = 10)
-harmonic_24h = detect_harmonic(data_24h, coins, order = 10)
+harmonic_1h = detect_harmonic(data_1h, order = 10)
+harmonic_4h = detect_harmonic(data_4h, order = 10)
+harmonic_8h = detect_harmonic(data_8h, order = 10)
+harmonic_24h = detect_harmonic(data_24h, order = 10)
 
 
 fig_price_ch_24_up = px.bar(
