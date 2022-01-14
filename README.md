@@ -11,8 +11,8 @@ I created this dashboard to monitor the crypto markets.
 * the whole repository can be hosted on streamlit as a web APP.
 
 Inspired by and learn from: 
-* https://www.youtube.com/watch?v=0ESc1bh3eIg, 
-* https://www.youtube.com/watch?v=Sb0A9i6d320, 
+* https://www.youtube.com/watch?v=0ESc1bh3eIg 
+* https://www.youtube.com/watch?v=Sb0A9i6d320
 * https://www.youtube.com/watch?v=tGpMb8R9D9M&list=PLFYcVF7huJR_4FRTZcR-rrSOpdTfoFnEI
 * https://www.youtube.com/watch?v=YhkNoOqYp9A
 
