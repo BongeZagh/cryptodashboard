@@ -193,7 +193,26 @@ mn_time = pd.to_datetime(current_time)-timedelta(hours = 5)
 #     candlestick = plot_pat(data_1h, coin)
 #     st.pyplot(candlestick)
 st.write(mn_time)
-st.dataframe(data_1h)
+
+st.dataframe(recent_candles.head(10))
+
+st.header('币圈行情动态')
+
+left_column, right_column = st.columns(2)
+left_column.plotly_chart(fig_price_ch_24_up, use_container_width=True)
+right_column.plotly_chart(fig_price_ch_24_down, use_container_width=True)
+
+left_column, right_column = st.columns(2)
+left_column.plotly_chart(fig_price_ch_8_up, use_container_width=True)
+right_column.plotly_chart(fig_price_ch_8_down, use_container_width=True)
+
+left_column, right_column = st.columns(2)
+left_column.plotly_chart(fig_price_ch_4_up, use_container_width=True)
+right_column.plotly_chart(fig_price_ch_4_down, use_container_width=True)
+
+left_column, right_column = st.columns(2)
+left_column.plotly_chart(fig_price_ch_1_up, use_container_width=True)
+right_column.plotly_chart(fig_price_ch_1_down, use_container_width=True)
 
 st.header('''超级趋势：''')
 
@@ -215,7 +234,7 @@ right_column.subheader('24小时：')
 right_column.write(super_up_24h)
 right_column.write(super_down_24h)
 
-st.header('''一阳穿三均扫描器''')
+st.header('''一阳穿三均''')
 
 left_column, right_column = st.columns(2)
 left_column.subheader('1小时：')
@@ -231,7 +250,7 @@ left_column.write(pierce_3ave_8h)
 right_column.subheader('24小时：')
 right_column.write(pierce_3ave_24h)
 
-st.header('''TTM 挤压扫描器''')
+st.header('''TTM 挤压''')
 
 left_column, right_column = st.columns(2)
 left_column.subheader('1小时：')
@@ -261,23 +280,7 @@ left_column.dataframe(harmonic_8h)
 right_column.write('24小时谐波形态：')
 right_column.dataframe(harmonic_24h)
 
-st.header('币圈行情动态')
 
-left_column, right_column = st.columns(2)
-left_column.plotly_chart(fig_price_ch_24_up, use_container_width=True)
-right_column.plotly_chart(fig_price_ch_24_down, use_container_width=True)
-
-left_column, right_column = st.columns(2)
-left_column.plotly_chart(fig_price_ch_8_up, use_container_width=True)
-right_column.plotly_chart(fig_price_ch_8_down, use_container_width=True)
-
-left_column, right_column = st.columns(2)
-left_column.plotly_chart(fig_price_ch_4_up, use_container_width=True)
-right_column.plotly_chart(fig_price_ch_4_down, use_container_width=True)
-
-left_column, right_column = st.columns(2)
-left_column.plotly_chart(fig_price_ch_1_up, use_container_width=True)
-right_column.plotly_chart(fig_price_ch_1_down, use_container_width=True)
 
 
 # symbol = st.sidebar.text_input("Symbol", value='BTC', max_chars=5)
