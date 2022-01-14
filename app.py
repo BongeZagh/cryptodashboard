@@ -194,9 +194,13 @@ mn_time = pd.to_datetime(current_time)-timedelta(hours = 5)
 #     st.pyplot(candlestick)
 st.write(mn_time)
 
-st.dataframe(recent_candles.head(10))
+market_brief = recent_candles.sort_values(by='price_ch_4', ascending=False).head(10)
 
-st.header('币圈行情动态')
+market_brief = market_brief[['Datetime', 'Symbol', 'Close', 'Open', 'High', 'Low']]
+
+st.subheader('币圈行情动态')
+
+st.dataframe(market_brief)
 
 left_column, right_column = st.columns(2)
 left_column.plotly_chart(fig_price_ch_24_up, use_container_width=True)
@@ -214,7 +218,7 @@ left_column, right_column = st.columns(2)
 left_column.plotly_chart(fig_price_ch_1_up, use_container_width=True)
 right_column.plotly_chart(fig_price_ch_1_down, use_container_width=True)
 
-st.header('''超级趋势：''')
+st.subheader('''超级趋势：''')
 
 left_column, right_column = st.columns(2)
 left_column.subheader('1小时：')
@@ -234,7 +238,7 @@ right_column.subheader('24小时：')
 right_column.write(super_up_24h)
 right_column.write(super_down_24h)
 
-st.header('''一阳穿三均''')
+st.subheader('''一阳穿三均''')
 
 left_column, right_column = st.columns(2)
 left_column.subheader('1小时：')
@@ -250,7 +254,7 @@ left_column.write(pierce_3ave_8h)
 right_column.subheader('24小时：')
 right_column.write(pierce_3ave_24h)
 
-st.header('''TTM 挤压''')
+st.subheader('''TTM 挤压''')
 
 left_column, right_column = st.columns(2)
 left_column.subheader('1小时：')
@@ -266,7 +270,7 @@ left_column.write(brk_out_8h)
 right_column.subheader('24小时：')
 right_column.write(brk_out_24h)
 
-st.header('谐波形态扫描器')
+st.subheader('谐波形态扫描器')
 
 left_column, right_column = st.columns(2)
 left_column.write('1小时谐波形态：')
