@@ -26,6 +26,18 @@ current_time = pd.DataFrame(data_1h[data_1h['Symbol'] == 'ETH/USDT']['Datetime']
 
 recent_candles = data_1h[data_1h['Datetime'] == current_time]
 
+
+super_up_1h=super_up(data_1h)
+super_up_4h=super_up(data_4h)
+super_up_8h=super_up(data_8h)
+super_up_24h=super_up(data_24h)
+
+super_down_1h=super_down(data_1h)
+super_down_4h=super_down(data_4h)
+super_down_8h=super_down(data_8h)
+super_down_24h=super_down(data_24h)
+
+
 brk_out_1h=brk_out(data_1h)
 brk_out_4h=brk_out(data_4h)
 brk_out_8h=brk_out(data_8h)
