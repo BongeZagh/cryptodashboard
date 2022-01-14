@@ -700,3 +700,17 @@ def brk_out(data):
 
     break_out_info = "盘整突破："+', '.join(list(break_outs))
     return break_out_info
+
+def pierce_3ave(data):
+    pierce_3aves = []
+    for i in data['Symbol'].unique().tolist():
+        df = data[data['Symbol'] == i]
+        if df['Bull'].iloc[-1]:
+            pierce_coin = i
+            pierce_coin = listToString(pierce_coin)
+            pierce_3aves.append(pierce_coin)
+
+    pierce_3aves = [s.replace("/USDT", "") for s in pierce_3aves]
+
+    pierce_3ave_info = "一阳穿三均："+', '.join(list(pierce_3aves))
+    return pierce_3ave_info
