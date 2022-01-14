@@ -10,7 +10,6 @@ def collect_data(timeframe='4h', limit=500):
     from datetime import datetime
     from functools import reduce
     from scipy.signal import argrelextrema
-    #import talib as ta
 
     # define the market
     exchange_f = ccxt.binance({
@@ -32,7 +31,6 @@ def collect_data(timeframe='4h', limit=500):
             lambda x: time.strftime('%Y-%m-%d %H:%M:%S', time.gmtime(x / 1000.)))
 
         df['Cap'] = df['Close'] * df['Vol']
-        
         df = df[:-1]
 
         # df['price_ch_15m'] = df["Close"].pct_change(1)
