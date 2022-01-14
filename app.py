@@ -215,25 +215,37 @@ right_column.subheader('24小时：')
 right_column.write(super_up_24h)
 right_column.write(super_down_24h)
 
+st.header('''一阳穿三均扫描器''')
+
+left_column, right_column = st.columns(2)
+left_column.subheader('1小时：')
+left_column.write(pierce_3ave_1h)
+
+right_column.subheader('4小时：')
+right_column.write(pierce_3ave_4h)
+
+left_column, right_column = st.columns(2)
+left_column.subheader('8小时：')
+left_column.write(pierce_3ave_8h)
+
+right_column.subheader('24小时：')
+right_column.write(pierce_3ave_24h)
+
 st.header('''TTM 挤压扫描器''')
 
 left_column, right_column = st.columns(2)
 left_column.subheader('1小时：')
 left_column.write(brk_out_1h)
-left_column.write(pierce_3ave_1h)
 
 right_column.subheader('4小时：')
 right_column.write(brk_out_4h)
-right_column.write(pierce_3ave_4h)
 
 left_column, right_column = st.columns(2)
 left_column.subheader('8小时：')
 left_column.write(brk_out_8h)
-left_column.write(pierce_3ave_8h)
 
 right_column.subheader('24小时：')
 right_column.write(brk_out_24h)
-right_column.write(pierce_3ave_24h)
 
 st.header('谐波形态扫描器')
 
