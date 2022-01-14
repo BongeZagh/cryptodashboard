@@ -722,3 +722,31 @@ def pierce_3ave(data):
 
     pierce_3ave_info = "一阳穿三均："+', '.join(list(pierce_3aves))
     return pierce_3ave_info
+
+def super_up(data):
+    spt_up_coins = []
+    for i in data['Symbol'].unique().tolist():
+        df = data[data['Symbol'] == i]
+        if df['spt_up'].iloc[-1]:
+            spt_up_coin = i
+            spt_up_coin = listToString(spt_up_coin)
+            spt_up_coins.append(spt_up_coin)
+
+    spt_up_coins = [s.replace("/USDT", "") for s in spt_up_coin]
+
+    spt_up_coin_info = "超级趋势（多）："+', '.join(list(spt_up_coins))
+    return spt_up_coin_info
+
+def super_down(data):
+    spt_down_coins = []
+    for i in data['Symbol'].unique().tolist():
+        df = data[data['Symbol'] == i]
+        if df['spt_down'].iloc[-1]:
+            spt_down_coin = i
+            spt_down_coin = listToString(spt_down_coin)
+            spt_down_coins.append(spt_down_coin)
+
+    spt_down_coins = [s.replace("/USDT", "") for s in spt_down_coin]
+
+    spt_down_coin_info = "超级趋势（空）："+', '.join(list(spt_down_coins))
+    return spt_down_coin_info
