@@ -15,10 +15,10 @@ from functools import reduce
 from scipy.signal import argrelextrema
 import plotly.graph_objects as go
 
-data_1h = collect_data(timeframe = '1h', limit = 1000)
-data_4h = collect_data(timeframe = '4h', limit = 1000)
-data_8h = collect_data(timeframe = '8h', limit = 1000)
-data_24h = collect_data(timeframe = '1d', limit = 1000)
+data_1h = collect_data(timeframe = '1h', limit = 500)
+data_4h = collect_data(timeframe = '4h', limit = 500)
+data_8h = collect_data(timeframe = '8h', limit = 500)
+data_24h = collect_data(timeframe = '1d', limit = 500)
 
 coins = data_1h['Symbol'].unique().tolist()
 
@@ -181,6 +181,7 @@ mn_time = pd.to_datetime(current_time)-timedelta(hours = 6)
 #     candlestick = plot_pat(data_1h, coin)
 #     st.pyplot(candlestick)
 st.write(mn_time)
+st.dataframe(data_1h)
 
 st.header('''TTM 挤压扫描器''')
 
