@@ -184,7 +184,7 @@ fig_price_ch_1_down.update_traces(texttemplate='%{text:.1%}', textposition='auto
 st.markdown('''# **东哥币圈扫描器**
 一个实用的币圈行情扫描器.
 ''')
-mn_time = pd.to_datetime(current_time)-timedelta(hours = 6)
+mn_time = pd.to_datetime(current_time)-timedelta(hours = 5)
 
 # exec(open("harmonic_detector.py").read())
 
