@@ -195,6 +195,26 @@ mn_time = pd.to_datetime(current_time)-timedelta(hours = 6)
 st.write(mn_time)
 st.dataframe(data_1h)
 
+st.header('''超级趋势：''')
+
+left_column, right_column = st.columns(2)
+left_column.subheader('1小时：')
+left_column.write(super_up_1h)
+left_column.write(super_down_1h)
+
+right_column.subheader('4小时：')
+right_column.write(super_up_4h)
+right_column.write(super_down_4h)
+
+left_column, right_column = st.columns(2)
+left_column.subheader('8小时：')
+left_column.write(super_up_8h)
+left_column.write(super_down_8h)
+
+right_column.subheader('24小时：')
+right_column.write(super_up_24h)
+right_column.write(super_down_24h)
+
 st.header('''TTM 挤压扫描器''')
 
 left_column, right_column = st.columns(2)
