@@ -732,7 +732,7 @@ def super_up(data):
             spt_up_coin = listToString(spt_up_coin)
             spt_up_coins.append(spt_up_coin)
 
-    spt_up_coins = [s.replace("/USDT", "") for s in spt_up_coin]
+    spt_up_coins = [s.replace("/USDT", "") for s in spt_up_coins]
 
     spt_up_coin_info = "超级趋势（多）："+', '.join(list(spt_up_coins))
     return spt_up_coin_info
@@ -746,7 +746,7 @@ def super_down(data):
             spt_down_coin = listToString(spt_down_coin)
             spt_down_coins.append(spt_down_coin)
 
-    spt_down_coins = [s.replace("/USDT", "") for s in spt_down_coin]
+    spt_down_coins = [s.replace("/USDT", "") for s in spt_down_coins]
 
     spt_down_coin_info = "超级趋势（空）："+', '.join(list(spt_down_coins))
     return spt_down_coin_info
