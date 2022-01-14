@@ -235,7 +235,7 @@ left_column.plotly_chart(fig_price_ch_1_up, use_container_width=True)
 right_column.plotly_chart(fig_price_ch_1_down, use_container_width=True)
 
 
-symbol = st.sidebar.text_input("Symbol", value='BTC', max_chars=5)
+# symbol = st.sidebar.text_input("Symbol", value='BTC', max_chars=5)
 
 # r = requests.get(f"https://api.stocktwits.com/api/2/streams/symbol/{symbol}.json")
 
