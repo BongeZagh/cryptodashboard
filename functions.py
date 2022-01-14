@@ -1,3 +1,85 @@
+candlestick_patterns = {
+    'CDL2CROWS':'Two Crows',
+    'CDL3BLACKCROWS':'Three Black Crows',
+    'CDL3INSIDE':'Three Inside Up/Down',
+    'CDL3LINESTRIKE':'Three-Line Strike',
+    'CDL3OUTSIDE':'Three Outside Up/Down',
+    'CDL3STARSINSOUTH':'Three Stars In The South',
+    'CDL3WHITESOLDIERS':'Three Advancing White Soldiers',
+    'CDLABANDONEDBABY':'Abandoned Baby',
+    'CDLADVANCEBLOCK':'Advance Block',
+    'CDLBELTHOLD':'Belt-hold',
+    'CDLBREAKAWAY':'Breakaway',
+    'CDLCLOSINGMARUBOZU':'Closing Marubozu',
+    'CDLCONCEALBABYSWALL':'Concealing Baby Swallow',
+    'CDLCOUNTERATTACK':'Counterattack',
+    'CDLDARKCLOUDCOVER':'Dark Cloud Cover',
+    'CDLDOJI':'Doji',
+    'CDLDOJISTAR':'Doji Star',
+    'CDLDRAGONFLYDOJI':'Dragonfly Doji',
+    'CDLENGULFING':'Engulfing Pattern',
+    'CDLEVENINGDOJISTAR':'Evening Doji Star',
+    'CDLEVENINGSTAR':'Evening Star',
+    'CDLGAPSIDESIDEWHITE':'Up/Down-gap side-by-side white lines',
+    'CDLGRAVESTONEDOJI':'Gravestone Doji',
+    'CDLHAMMER':'Hammer',
+    'CDLHANGINGMAN':'Hanging Man',
+    'CDLHARAMI':'Harami Pattern',
+    'CDLHARAMICROSS':'Harami Cross Pattern',
+    'CDLHIGHWAVE':'High-Wave Candle',
+    'CDLHIKKAKE':'Hikkake Pattern',
+    'CDLHIKKAKEMOD':'Modified Hikkake Pattern',
+    'CDLHOMINGPIGEON':'Homing Pigeon',
+    'CDLIDENTICAL3CROWS':'Identical Three Crows',
+    'CDLINNECK':'In-Neck Pattern',
+    'CDLINVERTEDHAMMER':'Inverted Hammer',
+    'CDLKICKING':'Kicking',
+    'CDLKICKINGBYLENGTH':'Kicking - bull/bear determined by the longer marubozu',
+    'CDLLADDERBOTTOM':'Ladder Bottom',
+    'CDLLONGLEGGEDDOJI':'Long Legged Doji',
+    'CDLLONGLINE':'Long Line Candle',
+    'CDLMARUBOZU':'Marubozu',
+    'CDLMATCHINGLOW':'Matching Low',
+    'CDLMATHOLD':'Mat Hold',
+    'CDLMORNINGDOJISTAR':'Morning Doji Star',
+    'CDLMORNINGSTAR':'Morning Star',
+    'CDLONNECK':'On-Neck Pattern',
+    'CDLPIERCING':'Piercing Pattern',
+    'CDLRICKSHAWMAN':'Rickshaw Man',
+    'CDLRISEFALL3METHODS':'Rising/Falling Three Methods',
+    'CDLSEPARATINGLINES':'Separating Lines',
+    'CDLSHOOTINGSTAR':'Shooting Star',
+    'CDLSHORTLINE':'Short Line Candle',
+    'CDLSPINNINGTOP':'Spinning Top',
+    'CDLSTALLEDPATTERN':'Stalled Pattern',
+    'CDLSTICKSANDWICH':'Stick Sandwich',
+    'CDLTAKURI':'Takuri (Dragonfly Doji with very long lower shadow)',
+    'CDLTASUKIGAP':'Tasuki Gap',
+    'CDLTHRUSTING':'Thrusting Pattern',
+    'CDLTRISTAR':'Tristar Pattern',
+    'CDLUNIQUE3RIVER':'Unique 3 River',
+    'CDLUPSIDEGAP2CROWS':'Upside Gap Two Crows',
+    'CDLXSIDEGAP3METHODS':'Upside/Downside Gap Three Methods'
+}
+
+
+def tr(data):
+    data['previous_close'] = data['Close'].shift(1)
+    data['high-low'] = abs(data['High'] - data['Low'])
+    data['high-pc'] = abs(data['High'] - data['previous_close'])
+    data['low-pc'] = abs(data['Low'] - data['previous_close'])
+
+    tr = data[['high-low', 'high-pc', 'low-pc']].max(axis=1)
+
+    return tr
+
+def atr(data, period):
+    data['tr'] = tr(data)
+    atr = data['tr'].rolling(period).mean()
+
+    return atr
+
+
 def collect_data(timeframe='4h', limit=500):
     # This function downloads candlestick data from
     # binance futures market
@@ -31,7 +113,6 @@ def collect_data(timeframe='4h', limit=500):
             lambda x: time.strftime('%Y-%m-%d %H:%M:%S', time.gmtime(x / 1000.)))
 
         df['Cap'] = df['Close'] * df['Vol']
-        df = df[:-1]
 
         # df['price_ch_15m'] = df["Close"].pct_change(1)
         # df['vol_ch_15m'] = df["Vol"].pct_change(1)
@@ -47,14 +128,6 @@ def collect_data(timeframe='4h', limit=500):
 
         df['price_ch_24'] = df["Close"].pct_change(24)
         df['vol_ch_24'] = df["Vol"].pct_change(24)
-
-        df['ma_5'] = df['Close'].rolling(window=5).mean()
-        df['ma_10'] = df['Close'].rolling(window=10).mean()
-        df['ma_20'] = df['Close'].rolling(window=20).mean()
-
-        df['Bull'] = False
-
-        df.loc[(df.ma_5 > df.ma_10) & (df.ma_5 > df.ma_20) & (df.Close >= df.ma_5) & (df.Low <= df.ma_20), 'Bull'] = True
 
         pd.options.mode.chained_assignment = None  # default='warn'
 
@@ -87,10 +160,46 @@ def collect_data(timeframe='4h', limit=500):
                    df['sqz_sft_6'] and not df['squeeze_on']
 
         df['squeeze_out'] = df.apply(out_squeeze, axis=1)
-
         # if df.iloc[-2]['squeeze_on'] and not df.iloc[-1]['squeeze_on']:
         # print("{} is coming out the squeeze".format(symbol))
+        
+        period = 7
+        atr_multiplier = 3
 
+        hl2 = (df['High'] + df['Low']) / 2
+        df['atr'] = atr(df, period)
+        df['upperband'] = hl2 + (atr_multiplier * df['atr'])
+        df['lowerband'] = hl2 - (atr_multiplier * df['atr'])
+        df['in_uptrend'] = True
+
+        for current in range(1, len(df.index)):
+            previous = current - 1
+
+            if df['Close'][current] > df['upperband'][previous]:
+                df['in_uptrend'][current] = True
+            elif df['Close'][current] < df['lowerband'][previous]:
+                df['in_uptrend'][current] = False
+            else:
+                df['in_uptrend'][current] = df['in_uptrend'][previous]
+
+                if df['in_uptrend'][current] and df['lowerband'][current] < df['lowerband'][previous]:
+                    df['lowerband'][current] = df['lowerband'][previous]
+
+                if not df['in_uptrend'][current] and df['upperband'][current] > df['upperband'][previous]:
+                    df['upperband'][current] = df['upperband'][previous]
+             
+        df['in_uptrd_sft_1'] = df['in_uptrend'].shift(1)
+       
+        def spt_up(df):
+            return df['in_uptrend'] and not df['in_uptrd_sft_1']
+
+        def spt_down(df):
+            return df['in_uptrd_sft_1'] and not df['in_uptrend']
+        
+        df['spt_up'] = df.apply(spt_up, axis=1)
+        df['spt_down'] = df.apply(spt_down, axis=1)
+
+                
         all_candles_f.append(df)
 
     all_candles_f = pd.concat(all_candles_f)
@@ -111,7 +220,7 @@ def listToString(s):
     return str1
 
 
-def plot_pat(data, symbol):
+def plot_pat(data, symbol, order = 10):
     import numpy as np
     import pandas as pd
     from scipy.signal import argrelextrema
@@ -129,8 +238,8 @@ def plot_pat(data, symbol):
 
     low = data.Low
 
-    max_idx = list(argrelextrema(high.values, np.greater, order=10)[0])
-    min_idx = list(argrelextrema(low.values, np.less, order=10)[0])
+    max_idx = list(argrelextrema(high.values, np.greater, order=order)[0])
+    min_idx = list(argrelextrema(low.values, np.less, order=order)[0])
 
     peak_1 = high.values[max_idx]
     peak_2 = low.values[min_idx]
@@ -426,7 +535,7 @@ def bear_butterfly(moves, symbol):
         return ([])
 
 
-def detect_harmonic(data, coins, order=10):
+def detect_harmonic(data, order=10):
     import numpy as np
     import pandas as pd
     import ccxt
@@ -435,6 +544,8 @@ def detect_harmonic(data, coins, order=10):
     from datetime import datetime
     from functools import reduce
     from scipy.signal import argrelextrema
+    
+    coins = data['Symbol'].unique().tolist()
 
 
     bull_bats = []
@@ -589,17 +700,3 @@ def brk_out(data):
 
     break_out_info = "盘整突破："+', '.join(list(break_outs))
     return break_out_info
-
-def pierce_3ave(data):
-    pierce_3aves = []
-    for i in data['Symbol'].unique().tolist():
-        df = data[data['Symbol'] == i]
-        if df['Bull'].iloc[-1]:
-            pierce_coin = i
-            pierce_coin = listToString(pierce_coin)
-            pierce_3aves.append(pierce_coin)
-
-    pierce_3aves = [s.replace("/USDT", "") for s in pierce_3aves]
-
-    pierce_3ave_info = "一阳穿三均："+', '.join(list(pierce_3aves))
-    return pierce_3ave_info
