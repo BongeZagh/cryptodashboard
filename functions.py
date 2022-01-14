@@ -128,6 +128,14 @@ def collect_data(timeframe='4h', limit=500):
 
         df['price_ch_24'] = df["Close"].pct_change(24)
         df['vol_ch_24'] = df["Vol"].pct_change(24)
+        
+        df['ma_5'] = df['Close'].rolling(window=5).mean()
+        df['ma_10'] = df['Close'].rolling(window=10).mean()
+        df['ma_20'] = df['Close'].rolling(window=20).mean()
+
+        df['Bull'] = False
+
+        df.loc[(df.ma_5 > df.ma_10) & (df.ma_5 > df.ma_20) & (df.Close >= df.ma_5) & (df.Low <= df.ma_20), 'Bull'] = True
 
         pd.options.mode.chained_assignment = None  # default='warn'
 
