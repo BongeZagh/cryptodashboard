@@ -113,6 +113,8 @@ def collect_data(timeframe='4h', limit=500):
             lambda x: time.strftime('%Y-%m-%d %H:%M:%S', time.gmtime(x / 1000.)))
 
         df['Cap'] = df['Close'] * df['Vol']
+        
+        df = df[:-1]
 
         # df['price_ch_15m'] = df["Close"].pct_change(1)
         # df['vol_ch_15m'] = df["Vol"].pct_change(1)
