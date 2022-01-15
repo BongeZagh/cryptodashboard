@@ -113,8 +113,10 @@ def collect_data(timeframe='4h', limit=500):
             lambda x: time.strftime('%Y-%m-%d %H:%M:%S', time.gmtime(x / 1000.)))
 
         df['Cap'] = df['Close'] * df['Vol']
-        df = df[:-1]
-        
+
+        # df['price_ch_15m'] = df["Close"].pct_change(1)
+        # df['vol_ch_15m'] = df["Vol"].pct_change(1)
+
         df['price_ch_1'] = df["Close"].pct_change(1)
         df['vol_ch_1'] = df["Vol"].pct_change(1)
 
@@ -197,10 +199,10 @@ def collect_data(timeframe='4h', limit=500):
         df['in_uptrd_sft_1'] = df['in_uptrend'].shift(1)
        
         def spt_up(df):
-            return df['in_uptrend'] and not df['in_uptrd_sft_1'] 
+            return df['in_uptrend'] and not df['in_uptrd_sft_1'] and (df['ma_5'] > df['ma_10'])
 
         def spt_down(df):
-            return df['in_uptrd_sft_1'] and not df['in_uptrend']
+            return df['in_uptrd_sft_1'] and not df['in_uptrend'] and (df['ma_5'] < df['ma_10'])
         
         df['spt_up'] = df.apply(spt_up, axis=1)
         df['spt_down'] = df.apply(spt_down, axis=1)
