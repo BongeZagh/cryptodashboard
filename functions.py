@@ -197,7 +197,7 @@ def collect_data(timeframe='4h', limit=500):
         df['in_uptrd_sft_1'] = df['in_uptrend'].shift(1)
        
         def spt_up(df):
-            return df['in_uptrend'] and not df['in_uptrd_sft_1']
+            return df['in_uptrend'] and not df['in_uptrd_sft_1'] 
 
         def spt_down(df):
             return df['in_uptrd_sft_1'] and not df['in_uptrend']
