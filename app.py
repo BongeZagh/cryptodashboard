@@ -198,9 +198,19 @@ market_brief = recent_candles.sort_values(by='price_ch_4', ascending=False).head
 
 market_brief = market_brief[['Datetime', 'Symbol', 'Close', 'Open', 'High', 'Low']]
 
-st.subheader('币圈行情动态')
+st.subheader('谐波形态扫描器')
 
-st.dataframe(market_brief)
+left_column, right_column = st.columns(2)
+left_column.write('1小时谐波形态：')
+left_column.dataframe(harmonic_1h)
+right_column.write('4小时谐波形态：')
+right_column.dataframe(harmonic_4h)
+
+left_column, right_column = st.columns(2)
+left_column.write('8小时谐波形态：')
+left_column.dataframe(harmonic_8h)
+right_column.write('24小时谐波形态：')
+right_column.dataframe(harmonic_24h)
 
 left_column, right_column = st.columns(2)
 left_column.plotly_chart(fig_price_ch_24_up, use_container_width=True)
@@ -270,20 +280,10 @@ left_column.write(brk_out_8h)
 right_column.subheader('24小时：')
 right_column.write(brk_out_24h)
 
-st.subheader('谐波形态扫描器')
 
-left_column, right_column = st.columns(2)
-left_column.write('1小时谐波形态：')
-left_column.dataframe(harmonic_1h)
-right_column.write('4小时谐波形态：')
-right_column.dataframe(harmonic_4h)
+st.subheader('币圈行情动态')
 
-left_column, right_column = st.columns(2)
-left_column.write('8小时谐波形态：')
-left_column.dataframe(harmonic_8h)
-right_column.write('24小时谐波形态：')
-right_column.dataframe(harmonic_24h)
-
+st.dataframe(market_brief)
 
 
 
