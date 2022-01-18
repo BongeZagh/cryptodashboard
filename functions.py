@@ -113,8 +113,6 @@ def collect_data(timeframe='4h', limit=500):
             lambda x: time.strftime('%Y-%m-%d %H:%M:%S', time.gmtime(x / 1000.)))
 
         df['Cap'] = df['Close'] * df['Vol']
-        
-        df = df[:-1]
 
         # df['price_ch_15m'] = df["Close"].pct_change(1)
         # df['vol_ch_15m'] = df["Vol"].pct_change(1)
@@ -274,6 +272,7 @@ def plot_pat(data, symbol, order = 10):
 
     current_pat = np.array(list(final_data.price[-4:]) + list(low[-1:]))
 
+
     start = min(current_idx)
 
     end = max(current_idx)
@@ -307,6 +306,13 @@ def peak_detect(df, order=10):
     # this function is to detect four price peaks,then
     # combine them with latest data point to define four
     # moiving segments for harmonic pattern detection.
+    import numpy as np
+    import pandas as pd
+    import ccxt
+    import time
+    import dateutil
+    from datetime import datetime
+    from functools import reduce
     from scipy.signal import argrelextrema
 
     dt = df.Datetime
@@ -343,7 +349,8 @@ def peak_detect(df, order=10):
 
     current_idx = np.array(list(final_df.datetime[-4:]) + list(dt[-1:]))
 
-    current_pat = np.array(list(final_df.price[-4:]) + list(price[-1:]))
+    current_pat = np.array(list(final_df.price[-4:]) + list(low[-1:]))
+
 
     start = min(current_idx)
 
@@ -360,7 +367,7 @@ def peak_detect(df, order=10):
 
 def bull_bat(moves, symbol):
     try:
-        err_allowed = 0.05
+        err_allowed = 0.1
         XA = moves[0]
         AB = moves[1]
         BC = moves[2]
@@ -369,9 +376,9 @@ def bull_bat(moves, symbol):
         M_pat = (XA > 0 and AB < 0 and BC > 0 and CD < 0)
         W_pat = (XA < 0 and AB > 0 and BC < 0 and CD > 0)
 
-        AB_range = np.array([0.5 - err_allowed, 0.5 + err_allowed]) * abs(XA)
-        BC_range = np.array([0.5 - err_allowed, 0.618 + err_allowed]) * abs(AB)
-        CD_range = np.array([2 - err_allowed, 2 + err_allowed]) * abs(BC)
+        AB_range = np.array([0.382 - err_allowed, 0.5 + err_allowed]) * abs(XA)
+        BC_range = np.array([0.382 - err_allowed, 0.886 + err_allowed]) * abs(AB)
+        CD_range = np.array([1.618 - err_allowed, 2.618 + err_allowed]) * abs(BC)
 
         bat_pat = (AB_range[0] < abs(AB) < AB_range[1] and BC_range[0] < abs(BC) < BC_range[1] and abs(CD) >= abs(BC))
 
@@ -385,7 +392,7 @@ def bull_bat(moves, symbol):
 
 
 def bear_bat(moves, symbol):
-    err_allowed = 0.05
+    err_allowed = 0.1
     XA = moves[0]
     AB = moves[1]
     BC = moves[2]
@@ -394,9 +401,9 @@ def bear_bat(moves, symbol):
     M_pat = (XA > 0 and AB < 0 and BC > 0 and CD < 0)
     W_pat = (XA < 0 and AB > 0 and BC < 0 and CD > 0)
 
-    AB_range = np.array([0.5 - err_allowed, 0.5 + err_allowed]) * abs(XA)
-    BC_range = np.array([0.5 - err_allowed, 0.618 + err_allowed]) * abs(AB)
-    CD_range = np.array([2 - err_allowed, 2 + err_allowed]) * abs(BC)
+    AB_range = np.array([0.382 - err_allowed, 0.5 + err_allowed]) * abs(XA)
+    BC_range = np.array([0.382 - err_allowed, 0.886 + err_allowed]) * abs(AB)
+    CD_range = np.array([1.618 - err_allowed, 2.618 + err_allowed]) * abs(BC)
 
     bat_pat = (AB_range[0] < abs(AB) < AB_range[1] and BC_range[0] < abs(BC) < BC_range[1] and abs(CD) >= abs(BC))
     # bat_pat = True
@@ -409,7 +416,7 @@ def bear_bat(moves, symbol):
 
 
 def bull_gartley(moves, symbol):
-    err_allowed = 0.05
+    err_allowed = 0.1
     XA = moves[0]
     AB = moves[1]
     BC = moves[2]
@@ -419,8 +426,8 @@ def bull_gartley(moves, symbol):
     W_pat = (XA < 0 and AB > 0 and BC < 0 and CD > 0)
 
     AB_range = np.array([0.618 - err_allowed, 0.618 + err_allowed]) * abs(XA)
-    BC_range = np.array([0.618 - err_allowed, 0.618 + err_allowed]) * abs(AB)
-    CD_range = np.array([1.618 - err_allowed, 1.618 + err_allowed]) * abs(BC)
+    BC_range = np.array([0.382 - err_allowed, 0.886 + err_allowed]) * abs(AB)
+    CD_range = np.array([1.13 - err_allowed, 1.618 + err_allowed]) * abs(BC)
 
     gartley_pat = (AB_range[0] < abs(AB) < AB_range[1] and BC_range[0] < abs(BC) < BC_range[1] and abs(CD) >= abs(BC))
     # gartley_pat = True
@@ -433,7 +440,7 @@ def bull_gartley(moves, symbol):
 
 
 def bear_gartley(moves, symbol):
-    err_allowed = 0.05
+    err_allowed = 0.1
     XA = moves[0]
     AB = moves[1]
     BC = moves[2]
@@ -443,8 +450,8 @@ def bear_gartley(moves, symbol):
     W_pat = (XA < 0 and AB > 0 and BC < 0 and CD > 0)
 
     AB_range = np.array([0.618 - err_allowed, 0.618 + err_allowed]) * abs(XA)
-    BC_range = np.array([0.618 - err_allowed, 0.618 + err_allowed]) * abs(AB)
-    CD_range = np.array([1.618 - err_allowed, 1.618 + err_allowed]) * abs(BC)
+    BC_range = np.array([0.382 - err_allowed, 0.886 + err_allowed]) * abs(AB)
+    CD_range = np.array([1.13 - err_allowed, 1.618 + err_allowed]) * abs(BC)
 
     gartley_pat = (AB_range[0] < abs(AB) < AB_range[1] and BC_range[0] < abs(BC) < BC_range[1] and abs(CD) >= abs(BC))
 
@@ -456,7 +463,15 @@ def bear_gartley(moves, symbol):
 
 
 def bull_crab(moves, symbol):
-    err_allowed = 0.05
+    import numpy as np
+    import pandas as pd
+    import ccxt
+    import time
+    import dateutil
+    from datetime import datetime
+    from functools import reduce
+    from scipy.signal import argrelextrema
+    err_allowed = 0.1
     XA = moves[0]
     AB = moves[1]
     BC = moves[2]
@@ -465,9 +480,9 @@ def bull_crab(moves, symbol):
     M_pat = (XA > 0 and AB < 0 and BC > 0 and CD < 0)
     W_pat = (XA < 0 and AB > 0 and BC < 0 and CD > 0)
 
-    AB_range = np.array([0.618 - err_allowed, 0.618 + err_allowed]) * abs(XA)
-    BC_range = np.array([0.5 - err_allowed, 0.618 + err_allowed]) * abs(AB)
-    CD_range = np.array([3.14 - err_allowed, 3.14 + err_allowed]) * abs(BC)
+    AB_range = np.array([0.382 - err_allowed, 0.886 + err_allowed]) * abs(XA)
+    BC_range = np.array([0.382 - err_allowed, 0.886 + err_allowed]) * abs(AB)
+    CD_range = np.array([2.618 - err_allowed, 3.618 + err_allowed]) * abs(BC)
 
     crab_pat = (AB_range[0] < abs(AB) < AB_range[1] and BC_range[0] < abs(BC) < BC_range[1] and abs(CD) >= abs(BC))
 
@@ -479,7 +494,7 @@ def bull_crab(moves, symbol):
 
 
 def bear_crab(moves, symbol):
-    err_allowed = 0.05
+    err_allowed = 0.1
     XA = moves[0]
     AB = moves[1]
     BC = moves[2]
@@ -488,9 +503,9 @@ def bear_crab(moves, symbol):
     M_pat = (XA > 0 and AB < 0 and BC > 0 and CD < 0)
     W_pat = (XA < 0 and AB > 0 and BC < 0 and CD > 0)
 
-    AB_range = np.array([0.618 - err_allowed, 0.618 + err_allowed]) * abs(XA)
-    BC_range = np.array([0.5 - err_allowed, 0.618 + err_allowed]) * abs(AB)
-    CD_range = np.array([3.14 - err_allowed, 3.14 + err_allowed]) * abs(BC)
+    AB_range = np.array([0.382 - err_allowed, 0.618 + err_allowed]) * abs(XA)
+    BC_range = np.array([0.382 - err_allowed, 0.886 + err_allowed]) * abs(AB)
+    CD_range = np.array([2.618 - err_allowed, 3.618 + err_allowed]) * abs(BC)
 
     crab_pat = (AB_range[0] < abs(AB) < AB_range[1] and BC_range[0] < abs(BC) < BC_range[1] and abs(CD) >= abs(BC))
 
@@ -502,7 +517,7 @@ def bear_crab(moves, symbol):
 
 
 def bull_butterfly(moves, symbol):
-    err_allowed = 0.05
+    err_allowed = 0.1
     XA = moves[0]
     AB = moves[1]
     BC = moves[2]
@@ -512,8 +527,8 @@ def bull_butterfly(moves, symbol):
     W_pat = (XA < 0 and AB > 0 and BC < 0 and CD > 0)
 
     AB_range = np.array([0.786 - err_allowed, 0.786 + err_allowed]) * abs(XA)
-    BC_range = np.array([0.5 - err_allowed, 0.886 + err_allowed]) * abs(AB)
-    CD_range = np.array([1.618 - err_allowed, 1.618 + err_allowed]) * abs(BC)
+    BC_range = np.array([0.382 - err_allowed, 0.886 + err_allowed]) * abs(AB)
+    CD_range = np.array([1.618 - err_allowed, 2.24 + err_allowed]) * abs(BC)
 
     butterfly_pat = (AB_range[0] < abs(AB) < AB_range[1] and BC_range[0] < abs(BC) < BC_range[1] and abs(CD) >= abs(BC))
 
@@ -524,7 +539,7 @@ def bull_butterfly(moves, symbol):
 
 
 def bear_butterfly(moves, symbol):
-    err_allowed = 0.05
+    err_allowed = 0.1
     XA = moves[0]
     AB = moves[1]
     BC = moves[2]
@@ -534,8 +549,8 @@ def bear_butterfly(moves, symbol):
     W_pat = (XA < 0 and AB > 0 and BC < 0 and CD > 0)
 
     AB_range = np.array([0.786 - err_allowed, 0.786 + err_allowed]) * abs(XA)
-    BC_range = np.array([0.5 - err_allowed, 0.886 + err_allowed]) * abs(AB)
-    CD_range = np.array([1.618 - err_allowed, 1.618 + err_allowed]) * abs(BC)
+    BC_range = np.array([0.382 - err_allowed, 0.886 + err_allowed]) * abs(AB)
+    CD_range = np.array([1.618 - err_allowed, 2.24 + err_allowed]) * abs(BC)
 
     butterfly_pat = (AB_range[0] < abs(AB) < AB_range[1] and BC_range[0] < abs(BC) < BC_range[1] and abs(CD) >= abs(BC))
 
@@ -562,7 +577,7 @@ def detect_harmonic(data, order=10):
     for i in coins:
         try:
             data_new = data[data['Symbol'] == i]
-            current_idx, current_pat, start, end, moves, high, low, final_data, symbol = peak_detect(data=data_new,
+            current_idx, current_pat, start, end, moves, high, low, final_data, symbol = peak_detect(data_new,
                                                                                                      order=order)
             bull_coin = bull_bat(moves, symbol)
 
@@ -578,7 +593,7 @@ def detect_harmonic(data, order=10):
     for i in coins:
         try:
             data_new = data[data['Symbol'] == i]
-            current_idx, current_pat, start, end, moves, high, low, final_data, symbol = peak_detect(data=data_new,
+            current_idx, current_pat, start, end, moves, high, low, final_data, symbol = peak_detect(data_new,
                                                                                                      order=order)
             bear_coin = bear_bat(moves, symbol)
 
@@ -594,7 +609,7 @@ def detect_harmonic(data, order=10):
     for i in coins:
         try:
             data_new = data[data['Symbol'] == i]
-            current_idx, current_pat, start, end, moves, high, low, final_data, symbol = peak_detect(data=data_new,
+            current_idx, current_pat, start, end, moves, high, low, final_data, symbol = peak_detect(data_new,
                                                                                                      order=order)
             bull_coin = bull_gartley(moves, symbol)
 
@@ -610,7 +625,7 @@ def detect_harmonic(data, order=10):
     for i in coins:
         try:
             data_new = data[data['Symbol'] == i]
-            current_idx, current_pat, start, end, moves, high, low, final_data, symbol = peak_detect(data=data_new,
+            current_idx, current_pat, start, end, moves, high, low, final_data, symbol = peak_detect(data_new,
                                                                                                      order=order)
             bear_coin = bear_gartley(moves, symbol)
 
@@ -626,7 +641,7 @@ def detect_harmonic(data, order=10):
     for i in coins:
         try:
             data_new = data[data['Symbol'] == i]
-            current_idx, current_pat, start, end, moves, high, low, final_data, symbol = peak_detect(data=data_new,
+            current_idx, current_pat, start, end, moves, high, low, final_data, symbol = peak_detect(data_new,
                                                                                                      order=order)
             bull_coin = bull_crab(moves, symbol)
 
@@ -642,7 +657,7 @@ def detect_harmonic(data, order=10):
     for i in coins:
         try:
             data_new = data[data['Symbol'] == i]
-            current_idx, current_pat, start, end, moves, high, low, final_data, symbol = peak_detect(data=data_new,
+            current_idx, current_pat, start, end, moves, high, low, final_data, symbol = peak_detect(data_new,
                                                                                                      order=order)
             bear_coin = bear_crab(moves, symbol)
 
@@ -658,7 +673,7 @@ def detect_harmonic(data, order=10):
     for i in coins:
         try:
             data_new = data[data['Symbol'] == i]
-            current_idx, current_pat, start, end, moves, high, low, final_data, symbol = peak_detect(data=data_new,
+            current_idx, current_pat, start, end, moves, high, low, final_data, symbol = peak_detect(data_new,
                                                                                                      order=order)
             bull_coin = bull_butterfly(moves, symbol)
 
@@ -674,7 +689,7 @@ def detect_harmonic(data, order=10):
     for i in coins:
         try:
             data_new = data[data['Symbol'] == i]
-            current_idx, current_pat, start, end, moves, high, low, final_data, symbol = peak_detect(data=data_new,
+            current_idx, current_pat, start, end, moves, high, low, final_data, symbol = peak_detect(data_new,
                                                                                                      order=order)
             bear_coin = bear_butterfly(moves, symbol)
 
@@ -752,3 +767,4 @@ def super_down(data):
 
     spt_down_coin_info = "超级趋势（空）："+', '.join(list(spt_down_coins))
     return spt_down_coin_info
+
