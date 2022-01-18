@@ -381,7 +381,7 @@ def bull_bat(moves, symbol):
         BC_range = np.array([0.382 - err_allowed, 0.886 + err_allowed]) * abs(AB)
         CD_range = np.array([1.618 - err_allowed, 2.618 + err_allowed]) * abs(BC)
 
-        bat_pat = (AB_range[0] < abs(AB) < AB_range[1] and BC_range[0] < abs(BC) < BC_range[1] and abs(CD) >= abs(BC))
+        bat_pat = (AB_range[0] < abs(AB) < AB_range[1] and BC_range[0] < abs(BC) < BC_range[1] and abs(CD) >= 0.7*abs(XA))
 
         if M_pat and bat_pat:
             return (symbol)
@@ -406,7 +406,7 @@ def bear_bat(moves, symbol):
     BC_range = np.array([0.382 - err_allowed, 0.886 + err_allowed]) * abs(AB)
     CD_range = np.array([1.618 - err_allowed, 2.618 + err_allowed]) * abs(BC)
 
-    bat_pat = (AB_range[0] < abs(AB) < AB_range[1] and BC_range[0] < abs(BC) < BC_range[1] and abs(CD) >= abs(BC))
+    bat_pat = (AB_range[0] < abs(AB) < AB_range[1] and BC_range[0] < abs(BC) < BC_range[1] and abs(CD) >= 0.7*abs(XA))
     # bat_pat = True
 
     if W_pat and bat_pat:
@@ -430,7 +430,7 @@ def bull_gartley(moves, symbol):
     BC_range = np.array([0.382 - err_allowed, 0.886 + err_allowed]) * abs(AB)
     CD_range = np.array([1.13 - err_allowed, 1.618 + err_allowed]) * abs(BC)
 
-    gartley_pat = (AB_range[0] < abs(AB) < AB_range[1] and BC_range[0] < abs(BC) < BC_range[1] and abs(CD) >= abs(BC))
+    gartley_pat = (AB_range[0] < abs(AB) < AB_range[1] and BC_range[0] < abs(BC) < BC_range[1] and abs(CD) >= 0.5*abs(XA))
     # gartley_pat = True
 
     if M_pat and gartley_pat:
@@ -454,7 +454,7 @@ def bear_gartley(moves, symbol):
     BC_range = np.array([0.382 - err_allowed, 0.886 + err_allowed]) * abs(AB)
     CD_range = np.array([1.13 - err_allowed, 1.618 + err_allowed]) * abs(BC)
 
-    gartley_pat = (AB_range[0] < abs(AB) < AB_range[1] and BC_range[0] < abs(BC) < BC_range[1] and abs(CD) >= abs(BC))
+    gartley_pat = (AB_range[0] < abs(AB) < AB_range[1] and BC_range[0] < abs(BC) < BC_range[1] and abs(CD) >= 0.5*abs(XA))
 
     if W_pat and gartley_pat:
         return (symbol)
@@ -485,7 +485,7 @@ def bull_crab(moves, symbol):
     BC_range = np.array([0.382 - err_allowed, 0.886 + err_allowed]) * abs(AB)
     CD_range = np.array([2.618 - err_allowed, 3.618 + err_allowed]) * abs(BC)
 
-    crab_pat = (AB_range[0] < abs(AB) < AB_range[1] and BC_range[0] < abs(BC) < BC_range[1] and abs(CD) >= abs(BC))
+    crab_pat = (AB_range[0] < abs(AB) < AB_range[1] and BC_range[0] < abs(BC) < BC_range[1] and abs(CD) >= 1.3*abs(XA))
 
     if M_pat and crab_pat:
         return (symbol)
@@ -495,6 +495,14 @@ def bull_crab(moves, symbol):
 
 
 def bear_crab(moves, symbol):
+    import numpy as np
+    import pandas as pd
+    import ccxt
+    import time
+    import dateutil
+    from datetime import datetime
+    from functools import reduce
+    from scipy.signal import argrelextrema    
     err_allowed = 0.1
     XA = moves[0]
     AB = moves[1]
@@ -508,7 +516,7 @@ def bear_crab(moves, symbol):
     BC_range = np.array([0.382 - err_allowed, 0.886 + err_allowed]) * abs(AB)
     CD_range = np.array([2.618 - err_allowed, 3.618 + err_allowed]) * abs(BC)
 
-    crab_pat = (AB_range[0] < abs(AB) < AB_range[1] and BC_range[0] < abs(BC) < BC_range[1] and abs(CD) >= abs(BC))
+    crab_pat = (AB_range[0] < abs(AB) < AB_range[1] and BC_range[0] < abs(BC) < BC_range[1] and abs(CD) >= 1.3*abs(XA))
 
     if W_pat and crab_pat:
         return (symbol)
@@ -531,7 +539,7 @@ def bull_butterfly(moves, symbol):
     BC_range = np.array([0.382 - err_allowed, 0.886 + err_allowed]) * abs(AB)
     CD_range = np.array([1.618 - err_allowed, 2.24 + err_allowed]) * abs(BC)
 
-    butterfly_pat = (AB_range[0] < abs(AB) < AB_range[1] and BC_range[0] < abs(BC) < BC_range[1] and abs(CD) >= abs(BC))
+    butterfly_pat = (AB_range[0] < abs(AB) < AB_range[1] and BC_range[0] < abs(BC) < BC_range[1] and abs(CD) >= 1.1*abs(XA))
 
     if M_pat and butterfly_pat:
         return (symbol)
@@ -553,7 +561,7 @@ def bear_butterfly(moves, symbol):
     BC_range = np.array([0.382 - err_allowed, 0.886 + err_allowed]) * abs(AB)
     CD_range = np.array([1.618 - err_allowed, 2.24 + err_allowed]) * abs(BC)
 
-    butterfly_pat = (AB_range[0] < abs(AB) < AB_range[1] and BC_range[0] < abs(BC) < BC_range[1] and abs(CD) >= abs(BC))
+    butterfly_pat = (AB_range[0] < abs(AB) < AB_range[1] and BC_range[0] < abs(BC) < BC_range[1] and abs(CD) >= 1.1*abs(XA))
 
     if W_pat and butterfly_pat:
         return (symbol)
