@@ -208,6 +208,36 @@ def collect_data(timeframe='4h', limit=500):
         df['spt_up'] = df.apply(spt_up, axis=1)
         df['spt_down'] = df.apply(spt_down, axis=1)
 
+        
+        for i in range(2,df.shape[0]):
+            current = df.iloc[i,:]
+            prev = df.iloc[i-1,:]
+            prev_2 = df.iloc[i-2,:]
+            realbody = abs(current['Open'] - current['Close'])
+            candle_range = current['High'] - current['Low']
+            idx = df.index[i]
+
+              # Bullish swing
+            df.loc[idx,'Bullish swing'] = current['Low'] > prev['Low'] and prev['Low'] < prev_2['Low']
+            # Bearish swing
+            df.loc[idx,'Bearish swing'] = current['High'] < prev['High'] and prev['High'] > prev_2['High']
+            # Bullish pinbar
+            df.loc[idx,'Bullish pinbar'] = realbody <= candle_range/3 and  min(current['Open'], current['Close']) > (current['High'] + current['Low'])/2 and current['Low'] < prev['Low']
+            # Bearish pinbar
+            df.loc[idx,'Bearish pinbar'] = realbody <= candle_range/3 and max(current['Open'] , current['Close']) < (current['High'] + current['Low'])/2 and current['High'] > prev['High']
+
+              # Inside bar
+            df.loc[idx,'Inside bar'] = current['High'] < prev['High'] and current['Low'] > prev['Low']
+
+              # Outside bar
+            df.loc[idx,'Outside bar'] = current['High'] > prev['High'] and current['Low'] < prev['Low']
+
+              # Bullish engulfing
+            df.loc[idx,'Bullish engulfing'] = current['High'] > prev['High'] and current['Low'] < prev['Low'] and realbody >= 0.8 * candle_range and current['Close'] > current['Open']
+            # Bearish engulfing
+            
+            df.loc[idx,'Bearish engulfing'] = current['High'] > prev['High'] and current['Low'] < prev['Low'] and realbody >= 0.8 * candle_range and current['Close'] < current['Open']
+            df.fillna(False, inplace=True)
                 
         all_candles_f.append(df)
 
@@ -215,8 +245,91 @@ def collect_data(timeframe='4h', limit=500):
 
     return all_candles_f
 
+def bullish_swing(data):
+    bullish_swing_coins = []
+    for i in data['Symbol'].unique().tolist():
+        df = data[data['Symbol'] == i]
+        if df['Bullish swing'].iloc[-1]:
+            bullish_swing_coin = i
+            bullish_swing_coin = listToString(bullish_swing_coin)
+            bullish_swing_coins.append(bullish_swing_coin)
 
-# Python program to convert a list to string
+    bullish_swing_coins = [s.replace("/USDT", "") for s in bullish_swing_coins]
+
+    bullish_swing_info = "Bullish swing："+', '.join(list(bullish_swing_coins))
+    return bullish_swing_info, bullish_swing_coins
+
+def bearish_swing(data):
+    bearish_swing_coins = []
+    for i in data['Symbol'].unique().tolist():
+        df = data[data['Symbol'] == i]
+        if df['Bearish swing'].iloc[-1]:
+            bearish_swing_coin = i
+            bearish_swing_coin = listToString(bearish_swing_coin)
+            bearish_swing_coins.append(bearish_swing_coin)
+
+    bearish_swing_coins = [s.replace("/USDT", "") for s in bearish_swing_coins]
+
+    bearish_swing_info = "Bearish swing："+', '.join(list(bearish_swing_coins))
+    return bearish_swing_info, bearish_swing_coins
+
+
+def bullish_pinbar(data):
+    bullish_pinbar_coins = []
+    for i in data['Symbol'].unique().tolist():
+        df = data[data['Symbol'] == i]
+        if df['Bullish pinbar'].iloc[-1]:
+            bullish_pinbar_coin = i
+            bullish_pinbar_coin = listToString(bullish_pinbar_coin)
+            bullish_pinbar_coins.append(bullish_pinbar_coin)
+
+    bullish_pinbar_coins = [s.replace("/USDT", "") for s in bullish_pinbar_coins]
+
+    bullish_pinbar_info = "Bullish pinbar："+', '.join(list(bullish_pinbar_coins))
+    return bullish_pinbar_info, bullish_pinbar_coins
+
+def bearish_pinbar(data):
+    bearish_pinbar_coins = []
+    for i in data['Symbol'].unique().tolist():
+        df = data[data['Symbol'] == i]
+        if df['Bearish pinbar'].iloc[-1]:
+            bearish_pinbar_coin = i
+            bearish_pinbar_coin = listToString(bearish_pinbar_coin)
+            bearish_pinbar_coins.append(bearish_pinbar_coin)
+
+    bearish_pinbar_coins = [s.replace("/USDT", "") for s in bearish_pinbar_coins]
+
+    bearish_pinbar_info = "Bearish pinbar："+', '.join(list(bearish_pinbar_coins))
+    return bearish_pinbar_info, bearish_pinbar_coins
+
+def bullish_engulfing(data):
+    bullish_engulfing_coins = []
+    for i in data['Symbol'].unique().tolist():
+        df = data[data['Symbol'] == i]
+        if df['Bullish engulfing'].iloc[-1]:
+            bullish_engulfing_coin = i
+            bullish_engulfing_coin = listToString(bullish_engulfing_coin)
+            bullish_engulfing_coins.append(bullish_engulfing_coin)
+
+    bullish_engulfing_coins = [s.replace("/USDT", "") for s in bullish_engulfing_coins]
+
+    bullish_engulfing_info = "Bullish engulfing："+', '.join(list(bullish_engulfing_coins))
+    return bullish_engulfing_info, bullish_engulfing_coins
+
+def bearish_engulfing(data):
+    bearish_engulfing_coins = []
+    for i in data['Symbol'].unique().tolist():
+        df = data[data['Symbol'] == i]
+        if df['Bearish engulfing'].iloc[-1]:
+            bearish_engulfing_coin = i
+            bearish_engulfing_coin = listToString(bearish_engulfing_coin)
+            bearish_engulfing_coins.append(bearish_engulfing_coin)
+
+    bearish_engulfing_coins = [s.replace("/USDT", "") for s in bearish_engulfing_coins]
+
+    bearish_engulfing_info = "Bearish engulfing："+', '.join(list(bearish_engulfing_coins))
+    return bearish_engulfing_info, bearish_engulfing_coins
+
 # Python program to convert a list to string
 
 def listToString(s):
