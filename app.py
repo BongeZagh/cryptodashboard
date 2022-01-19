@@ -1,3 +1,5 @@
+
+   
 import streamlit as st
 import pandas as pd
 import requests
@@ -25,34 +27,6 @@ coins = data_1h['Symbol'].unique().tolist()
 current_time = pd.DataFrame(data_1h[data_1h['Symbol'] == 'ETH/USDT']['Datetime']).iloc[-1, 0]
 
 recent_candles = data_1h[data_1h['Datetime'] == current_time]
-
-bullish_swing_info_1h, bullish_swing_coins_1h = bullish_swing(data_1h)
-bearish_swing_info_1h, bearish_swing_coins_1h = bearish_swing(data_1h)
-bullish_pinbar_info_1h, bullish_pinbar_coins_1h = bullish_pinbar(data_1h)
-bearish_pinbar_info_1h, bearish_pinbar_coins_1h = bearish_pinbar(data_1h)
-bullish_engulfing_info_1h, bullish_engulfing_coins_1h = bullish_engulfing(data_1h)
-bearish_engulfing_info_1h, bearish_engulfing_coins_1h = bearish_engulfing(data_1h)
-
-bullish_swing_info_4h, bullish_swing_coins_4h = bullish_swing(data_4h)
-bearish_swing_info_4h, bearish_swing_coins_4h = bearish_swing(data_4h)
-bullish_pinbar_info_4h, bullish_pinbar_coins_4h = bullish_pinbar(data_4h)
-bearish_pinbar_info_4h, bearish_pinbar_coins_4h = bearish_pinbar(data_4h)
-bullish_engulfing_info_4h, bullish_engulfing_coins_4h = bullish_engulfing(data_4h)
-bearish_engulfing_info_4h, bearish_engulfing_coins_4h = bearish_engulfing(data_4h)
-
-bullish_swing_info_8h, bullish_swing_coins_8h = bullish_swing(data_8h)
-bearish_swing_info_8h, bearish_swing_coins_8h = bearish_swing(data_8h)
-bullish_pinbar_info_8h, bullish_pinbar_coins_8h = bullish_pinbar(data_8h)
-bearish_pinbar_info_8h, bearish_pinbar_coins_8h = bearish_pinbar(data_8h)
-bullish_engulfing_info_8h, bullish_engulfing_coins_8h = bullish_engulfing(data_8h)
-bearish_engulfing_info_8h, bearish_engulfing_coins_8h = bearish_engulfing(data_8h)
-
-bullish_swing_info_24h, bullish_swing_coins_24h = bullish_swing(data_24h)
-bearish_swing_info_24h, bearish_swing_coins_24h = bearish_swing(data_24h)
-bullish_pinbar_info_24h, bullish_pinbar_coins_24h = bullish_pinbar(data_24h)
-bearish_pinbar_info_24h, bearish_pinbar_coins_24h = bearish_pinbar(data_24h)
-bullish_engulfing_info_24h, bullish_engulfing_coins_24h = bullish_engulfing(data_24h)
-bearish_engulfing_info_24h, bearish_engulfing_coins_24h = bearish_engulfing(data_24h)
 
 
 super_up_1h=super_up(data_1h)
@@ -239,50 +213,6 @@ left_column.write('8小时谐波形态：')
 left_column.dataframe(harmonic_8h)
 right_column.write('24小时谐波形态：')
 right_column.dataframe(harmonic_24h)
-
-st.subheader('''k线形态：''')
-
-left_column, right_column = st.columns(2)
-left_column.subheader('1小时：')
-left_column.write(bullish_pinbar_info_1h)
-left_column.write(bearish_pinbar_info_1h)
-left_column.write(bullish_engulfing_info_1h)
-left_column.write(bearish_engulfing_info_1h)
-left_column.write(bullish_swing_info_1h)
-left_column.write(bearish_swing_info_1h)
-
-right_column.subheader('4小时：')
-right_column.write(bullish_pinbar_info_4h)
-right_column.write(bearish_pinbar_info_4h)
-right_column.write(bullish_engulfing_info_4h)
-right_column.write(bearish_engulfing_info_4h)
-right_column.write(bullish_swing_info_4h)
-right_column.write(bearish_swing_info_4h)
-
-left_column, right_column = st.columns(2)
-left_column.subheader('8小时：')
-left_column.write(bullish_pinbar_info_8h)
-left_column.write(bearish_pinbar_info_8h)
-left_column.write(bullish_engulfing_info_8h)
-left_column.write(bearish_engulfing_info_8h)
-left_column.write(bullish_swing_info_8h)
-left_column.write(bearish_swing_info_8h)
-
-right_column.subheader('24小时：')
-right_column.write(bullish_pinbar_info_24h)
-right_column.write(bearish_pinbar_info_24h)
-right_column.write(bullish_engulfing_info_24h)
-right_column.write(bearish_engulfing_info_24h)
-right_column.write(bullish_swing_info_24h)
-right_column.write(bearish_swing_info_24h)
-
-
-
-
-
-
-
-
 
 left_column, right_column = st.columns(2)
 left_column.plotly_chart(fig_price_ch_24_up, use_container_width=True)
